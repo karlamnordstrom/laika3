@@ -1,0 +1,99 @@
+Steps to convert to python3 (both tests are successful,
+notebooks still need some massaging but the included data
+is unreadable in python 3 due to pickle incompatibility anyway
+and the steps that can run do so successfully):
+
+* fix print statements
+* fix the tuple argument in Fx_pos in laika/raw_gnss.py
+* set up use_2to3 in setup.py to use automatic conversion for standard libraries etc
+* change integer divisions in laika/ephemeris.py and laika/raw_gnss.py from / to //
+  (python3 integer division is float by default, // gives python2 behaviour)
+* force binary handling of .Z files in laika/downloader.py:
+line 53:       f = open(filepath_zipped, 'r') -> f = open(filepath_zipped, 'rb')
+line 59:       f = open(filepath, 'w') -> f = open(filepath, 'wb')
+
+Also fixed bug in laika/iono.py when getting TEC content on an interpolation anchor point.
+
+diff in laika:
+
+diff -r laika/astro_dog.py ../laika/laika/astro_dog.py
+161c161
+<           print('No nav data found for prn : %s flagging as bad' % prn)
+---
+>           print 'No nav data found for prn : %s flagging as bad' % prn
+168c168
+<       print("Russian orbit data seems broken, using NASA's")
+---
+>       print "Russian orbit data seems broken, using NASA's"
+180c180
+<           print('No orbit data found for prn : %s flagging as bad' % prn)
+---
+>           print 'No orbit data found for prn : %s flagging as bad' % prn
+192c192
+<           print('No dcb data found for prn : %s flagging as bad' % prn)
+---
+>           print 'No dcb data found for prn : %s flagging as bad' % prn
+diff -r laika/downloader.py ../laika/laika/downloader.py
+2d1
+< #import urllib.request as urllib2
+34c33
+<       print("pulling from", url_cache, "to", filepath)
+---
+>       print "pulling from", url_cache, "to", filepath
+37c36
+<       print("cache download failed, pulling from", url, "to", filepath)
+---
+>       print "cache download failed, pulling from", url, "to", filepath
+53c52
+<       f = open(filepath_zipped, 'rb')
+---
+>       f = open(filepath_zipped, 'r')
+59c58
+<     f = open(filepath, 'wb')
+---
+>     f = open(filepath, 'w')
+diff -r laika/ephemeris.py ../laika/laika/ephemeris.py
+307c307
+<       epoch = data[prn][i + deg//2][0]
+---
+>       epoch = data[prn][i + deg/2][0]
+321c321
+<       poly_data['clock'] = [(data[prn][i + deg//2 + 1][4] - data[prn][i + deg//2 - 1][4])/1800, data[prn][i + deg//2][4]]
+---
+>       poly_data['clock'] = [(data[prn][i + deg/2 + 1][4] - data[prn][i + deg/2 - 1][4])/1800, data[prn][i + deg/2][4]]
+diff -r laika/gps_time.py ../laika/laika/gps_time.py
+25c25
+<     wk = (t - wk_ref).days // 7 + refwk
+---
+>     wk = (t - wk_ref).days / 7 + refwk
+112c112
+<       print("Type of subtraced:", type(other))
+---
+>       print "Type of subtraced:", type(other)
+124c124
+<       print("Type of added:", type(other))
+---
+>       print "Type of added:", type(other)
+147c147
+<     return int(self.tow//(24*3600))
+---
+>     return int(self.tow/(24*3600))
+diff -r laika/iono.py ../laika/laika/iono.py
+136c136
+<       E = (1 - (time - self.t1)/SECS_IN_HR)*self.grid_TEC1[lat][lon] + ((time - self.t1)/SECS_IN_HR)*self.grid_TEC2[lat][lon]
+---
+>       E = self.grid_TEC[lat][lon]
+Only in laika/lib: __pycache__
+diff -r laika/raw_gnss.py ../laika/laika/raw_gnss.py
+291,293c291
+< #  def Fx_pos((x, y, z, bc, bg), no_weight=no_weight):
+<   def Fx_pos(arg1, no_weight=no_weight):
+<     x , y, z, bc, bg = arg1
+
+diff in root:
+
+diff setup.py ../laika/setup.py
+18d17
+<   use_2to3=True,
+21a21
+> #    'scipy==1.0.0',

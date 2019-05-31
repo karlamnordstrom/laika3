@@ -158,14 +158,14 @@ class AstroDog(object):
     for constellation in self.valid_const:
       for prn in get_prns_from_constellation(constellation):
         if prn not in detected_prns and prn not in self.bad_sats:
-          print 'No nav data found for prn : %s flagging as bad' % prn
+          print('No nav data found for prn : %s flagging as bad' % prn)
           self.bad_sats.append(prn)
 
   def get_orbit_data(self, time):
     file_paths_sp3 = download_orbits_russia(time, cache_dir=self.cache_dir)
     ephems_sp3 = parse_sp3_orbits(file_paths_sp3, self.valid_const)
     if len(ephems_sp3) < 5:
-      print "Russian orbit data seems broken, using NASA's"
+      print("Russian orbit data seems broken, using NASA's")
       file_paths_sp3 = download_orbits(time, cache_dir=self.cache_dir)
       ephems_sp3 = parse_sp3_orbits(file_paths_sp3, self.valid_const)
     if len(ephems_sp3) < 5:
@@ -177,7 +177,7 @@ class AstroDog(object):
     for constellation in self.valid_const:
       for prn in get_prns_from_constellation(constellation):
         if prn not in detected_prns and prn not in self.bad_sats:
-          print 'No orbit data found for prn : %s flagging as bad' % prn
+          print('No orbit data found for prn : %s flagging as bad' % prn)
           self.bad_sats.append(prn)
 
   def get_dcb_data(self, time):
@@ -189,7 +189,7 @@ class AstroDog(object):
     for constellation in self.valid_const:
       for prn in get_prns_from_constellation(constellation):
         if prn not in detected_prns and prn not in self.bad_sats:
-          print 'No dcb data found for prn : %s flagging as bad' % prn
+          print('No dcb data found for prn : %s flagging as bad' % prn)
           self.bad_sats.append(prn)
 
   def get_ionex_data(self, time):

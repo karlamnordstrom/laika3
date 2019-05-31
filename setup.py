@@ -15,10 +15,10 @@ setup(
   packages=find_packages(),
   platforms='any',
   license='MIT',
+  use_2to3=True,
   setup_requires=['numpy', 'pytest-runner'],
   install_requires=[
     'requests',
-    'scipy==1.0.0',
     'tqdm'
   ],
   ext_modules=[],

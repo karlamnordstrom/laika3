@@ -288,7 +288,9 @@ def calc_vel_fix(measurements, est_pos, v0=[0, 0, 0, 0], no_weight=False, signal
 
 def pr_residual(measurements, signal='C1C', no_weight=False, no_nans=False):
   # solve for pos
-  def Fx_pos((x, y, z, bc, bg), no_weight=no_weight):
+#  def Fx_pos((x, y, z, bc, bg), no_weight=no_weight):
+  def Fx_pos(arg1, no_weight=no_weight):
+    x , y, z, bc, bg = arg1
     rows = []
 
     for meas in measurements:

@@ -1,4 +1,5 @@
 import os
+#import urllib.request as urllib2
 import urllib2
 from urlparse import urlparse
 
@@ -30,10 +31,10 @@ def download_file(url_base, folder_path, cacheDir, filename, compression='', ove
 
     # try to download
     try:
-      print "pulling from", url_cache, "to", filepath
+      print("pulling from", url_cache, "to", filepath)
       urlf = urllib2.urlopen(url_cache, timeout=5)
     except IOError as e:
-      print "cache download failed, pulling from", url, "to", filepath
+      print("cache download failed, pulling from", url, "to", filepath)
       try:
         urlf = urllib2.urlopen(url)
       except IOError as e:
@@ -49,13 +50,13 @@ def download_file(url_base, folder_path, cacheDir, filename, compression='', ove
       uncompressed_data = f.read()
       f .close()
     elif compression == '.Z':
-      f = open(filepath_zipped, 'r')
+      f = open(filepath_zipped, 'rb')
       compressed_data = f.read()
       uncompressed_data = unlzw(compressed_data)
       f.close()
     else:
       raise NotImplementedError('unknown compression: ', compression)
-    f = open(filepath, 'w')
+    f = open(filepath, 'wb')
     f.write(uncompressed_data)
     f.close()
   return filepath

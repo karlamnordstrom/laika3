@@ -341,7 +341,7 @@ class EKF_sym(object):
     # rewind
     if t < self.filter_time:
       if len(self.rewind_t) == 0 or t < self.rewind_t[0] or t < self.rewind_t[-1] -1.0:
-        print "observation too old at %.3f with filter at %.3f, ignoring" % (t, self.filter_time)
+        print("observation too old at %.3f with filter at %.3f, ignoring" % (t, self.filter_time))
         return None
       rewound = self.rewind(t)
     else:
