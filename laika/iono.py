@@ -62,7 +62,7 @@ class IonexMap:
     self.grid_TEC2 = np.array([], dtype='uint16')
     self.t1 = GPSTime.from_datetime(dt.datetime(*map(int, data1[0].split()[:6])))
     self.t2 = GPSTime.from_datetime(dt.datetime(*map(int, data2[0].split()[:6])))
-    assert self.t2 - self.t1 == SECS_IN_HR
+    self.timediff = self.t2 - self.t1
     assert len(data1) == len(data2)
 
     self.max_time_diff = SECS_IN_MIN*30
@@ -133,7 +133,7 @@ class IonexMap:
     if pos[0] in self.lats and pos[1] in self.lons:
       lat = self.find_nearest(self.lats, pos[0])
       lon = self.find_nearest(self.lons, pos[1])
-      E = (1 - (time - self.t1)/SECS_IN_HR)*self.grid_TEC1[lat][lon] + ((time - self.t1)/SECS_IN_HR)*self.grid_TEC2[lat][lon] 
+      E = (1 - (time - self.t1)/self.timediff)*self.grid_TEC1[lat][lon] + ((time - self.t1)/self.timediff)*self.grid_TEC2[lat][lon]
       return E
     lat_idxs = closest_in_list(self.lats, pos[0])
     lon_idxs = closest_in_list(self.lons, pos[1])
@@ -149,7 +149,7 @@ class IonexMap:
     (E00, E10), (E01, E11) = self.grid_TEC2[lat_idxs[0]:lat_idxs[1] + 1, lon_idxs[0]:lon_idxs[1] + 1]
     TEC_2 = ((1 - p) * (1 - q) * E00 + p * (1 - q) * E01 + (1 - p) * q * E10 + p * q * E11)
 
-    return (1 - (time - self.t1)/SECS_IN_HR)*TEC_1 + ((time - self.t1)/SECS_IN_HR)*TEC_2
+    return (1 - (time - self.t1)/self.timediff)*TEC_1 + ((time - self.t1)/self.timediff)*TEC_2
 
 
 
