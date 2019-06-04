@@ -12,7 +12,7 @@ from inputs import getSpWxData
 
 start = datetime(2003,1,1,0,0,0)
 # end = datetime(2016,1,1,0,0,0)
-end = datetime(2003,1,2,0,0,0)
+end = datetime(2003,2,1,0,0,0)
 
 lon_bins = np.linspace(-180, 180, 73)
 lat_bins = np.linspace(-90, 90, 73)
