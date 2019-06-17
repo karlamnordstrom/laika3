@@ -62,10 +62,10 @@ class IonexMap:
     self.grid_TEC2 = np.array([], dtype='uint16')
     self.t1 = GPSTime.from_datetime(dt.datetime(*map(int, data1[0].split()[:6])))
     date = map(int, data2[0].split()[:6])
-    if date[3] == 24:
-        date[2] = int(date[2]) + 1
-        date[3] = 0
-    self.t2 = GPSTime.from_datetime(dt.datetime(*date))
+    if date[3] != 24:
+        self.t2 = GPSTime.from_datetime(dt.datetime(*date))
+    else:
+        self.t2 = GPSTime.from_datetime(dt.datetime(date[0],date[1],date[2]) + dt.timedelta(days=1))
     self.timediff = self.t2 - self.t1
     assert len(data1) == len(data2)
 
@@ -212,9 +212,7 @@ def parse_ionex(ionex_file):
     if date[3] != 24:
         map_dates += [dt.datetime(*date)]
     else:
-        date[2] = int(date[2]) + 1
-        date[3] = 0
-        map_dates += [dt.datetime(*date)]
+        map_dates += [dt.datetime(date[0],date[1],date[2]) + dt.timedelta(days=1)]
 
   maps = []
   iono_map = iono_map_prev = None
