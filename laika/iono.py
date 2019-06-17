@@ -69,7 +69,7 @@ class IonexMap:
     self.timediff = self.t2 - self.t1
     assert len(data1) == len(data2)
 
-    self.max_time_diff = SECS_IN_MIN*30
+    self.max_time_diff = self.timediff/2
     self.epoch = self.t1 + self.max_time_diff
 
     self.lats = np.array([])
