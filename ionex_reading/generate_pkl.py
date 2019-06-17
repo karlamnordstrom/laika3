@@ -12,7 +12,7 @@ from inputs import getSpWxData
 
 start = datetime(2003,1,1,0,0,0)
 # end = datetime(2016,1,1,0,0,0)
-end = datetime(2003,2,1,0,0,0)
+end = datetime(2006,1,1,0,0,0)
 
 lon_bins = np.linspace(-180, 180, 73)
 lat_bins = np.linspace(-90, 90, 73)
@@ -45,5 +45,4 @@ for idx, timestamp in enumerate(daterange.to_pydatetime()):
             sub_idx = sub_idx + 1
 
 df = pd.DataFrame(data)
-print(df)
 df.to_pickle('data_pd.pkl')

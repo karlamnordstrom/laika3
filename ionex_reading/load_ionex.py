@@ -46,7 +46,7 @@ ax = fig.add_subplot(111)
 m = setup_map(ax)
 
 lon_bins = np.linspace(-180, 180, 73)
-lat_bins = np.linspace(-90, 90, 37)
+lat_bins = np.linspace(-90, 90, 73)
 
 # print(lon_bins, lat_bins)
 

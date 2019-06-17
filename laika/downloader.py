@@ -8,7 +8,7 @@ from constants import SECS_IN_DAY, SECS_IN_WEEK
 from gps_time import GPSTime
 from datetime import datetime
 from unlzw import unlzw
-
+import logging as log
 
 def ftpcache_path(url):
   p = urlparse(url)
@@ -164,15 +164,23 @@ def download_orbits_russia(time, cache_dir):
 def download_ionex(time, cache_dir):
   cache_subdir = cache_dir + 'ionex/'
   t = time.as_datetime()
-  url_base = 'ftp://cddis.gsfc.nasa.gov/gnss/products/ionex/'
-  folder_path = t.strftime('%Y/%j/')
-  for filename in [t.strftime("codg%j0.%yi"), t.strftime("c1pg%j0.%yi"), t.strftime("c2pg%j0.%yi")]:
-    try:
+  try:
+      url_base = 'ftp://newg1.upc.es/upc_ionex/'
+      folder_path = t.strftime('%Y/%j_%y%m%d.15min/')
+      filename = t.strftime('uqrg%j0.%yi')
       filepath = download_file(url_base, folder_path, cache_subdir, filename, compression='.Z')
       return filepath
-    except IOError as e:
-      last_err = e
-  raise last_err
+  except:
+      log.warn("Can't find UQRG grids for " + str(t) + " , trying other sources.")
+      url_base = 'ftp://cddis.gsfc.nasa.gov/gnss/products/ionex/'
+      folder_path = t.strftime('%Y/%j/')
+      for filename in [t.strftime("codg%j0.%yi"), t.strftime("c1pg%j0.%yi"), t.strftime("c2pg%j0.%yi")]:
+        try:
+          filepath = download_file(url_base, folder_path, cache_subdir, filename, compression='.Z')
+          return filepath
+        except IOError as e:
+          last_err = e
+      raise last_err
 
 
 def download_dcb(time, cache_dir):
