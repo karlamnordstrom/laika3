@@ -36,7 +36,10 @@ def download_file(url_base, folder_path, cacheDir, filename, compression='', ove
     except IOError as e:
       print("cache download failed, pulling from", url, "to", filepath)
       try:
-        urlf = urllib2.urlopen(url)
+        urlf = urllib2.urlopen(url, timeout=10)
+      except socket.timeout:
+        log.warn("Download timed out, trying again...")
+        return download_file(url_base, folder_path, cacheDir, filename, compression, overwrite)
       except IOError as e:
         raise IOError("Could not download file from: " + url)
 
