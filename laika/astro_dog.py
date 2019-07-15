@@ -51,7 +51,7 @@ class AstroDog(object):
       self.dcbs[prn] = []
       self.nav[prn] = []
 
-  def get_ionex(self, time):
+  def get_ionex(self, time, ionex='UQRG'):
     if self.cached_ionex is not None and self.cached_ionex.valid(time):
       return self.cached_ionex
 
@@ -59,7 +59,7 @@ class AstroDog(object):
     if self.cached_ionex is not None and self.cached_ionex.valid(time):
       return self.cached_ionex
 
-    self.get_ionex_data(time)
+    self.get_ionex_data(time, ionex)
     self.cached_ionex = get_closest(time, self.ionex_maps)
     if self.cached_ionex is not None and self.cached_ionex.valid(time):
       return self.cached_ionex
@@ -192,8 +192,8 @@ class AstroDog(object):
           print('No dcb data found for prn : %s flagging as bad' % prn)
           self.bad_sats.append(prn)
 
-  def get_ionex_data(self, time):
-    file_path_ionex = download_ionex(time, cache_dir=self.cache_dir)
+  def get_ionex_data(self, time, ionex='UQRG'):
+    file_path_ionex = download_ionex(time, cache_dir=self.cache_dir, ionex=ionex)
     ionex_maps = parse_ionex(file_path_ionex)
     for im in ionex_maps:
       self.ionex_maps.append(im)

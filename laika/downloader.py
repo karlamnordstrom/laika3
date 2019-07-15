@@ -164,26 +164,40 @@ def download_orbits_russia(time, cache_dir):
   return downloaded_files
 
 
-def download_ionex(time, cache_dir):
+def download_ionex(time, cache_dir, ionex='UQRG'):
   cache_subdir = cache_dir + 'ionex/'
   t = time.as_datetime()
-  try:
-      url_base = 'ftp://newg1.upc.es/upc_ionex/'
-      folder_path = t.strftime('%Y/%j_%y%m%d.15min/')
-      filename = t.strftime('uqrg%j0.%yi')
-      filepath = download_file(url_base, folder_path, cache_subdir, filename, compression='.Z')
-      return filepath
-  except:
-      log.warn("Can't find UQRG grids for " + str(t) + " , trying other sources.")
+  if ionex == 'UQRG':
+      try:
+          url_base = 'ftp://newg1.upc.es/upc_ionex/'
+          folder_path = t.strftime('%Y/%j_%y%m%d.15min/')
+          filename = t.strftime('uqrg%j0.%yi')
+          filepath = download_file(url_base, folder_path, cache_subdir, filename, compression='.Z')
+          return filepath
+      except:
+          log.warn("Can't find UQRG grids for " + str(t) + " , trying other sources.")
+          url_base = 'ftp://cddis.gsfc.nasa.gov/gnss/products/ionex/'
+          folder_path = t.strftime('%Y/%j/')
+          for filename in [t.strftime("codg%j0.%yi"), t.strftime("c1pg%j0.%yi"), t.strftime("c2pg%j0.%yi")]:
+            try:
+              filepath = download_file(url_base, folder_path, cache_subdir, filename, compression='.Z')
+              return filepath
+            except IOError as e:
+              last_err = e
+          raise last_err
+  elif ionex == 'JPLG':
       url_base = 'ftp://cddis.gsfc.nasa.gov/gnss/products/ionex/'
       folder_path = t.strftime('%Y/%j/')
-      for filename in [t.strftime("codg%j0.%yi"), t.strftime("c1pg%j0.%yi"), t.strftime("c2pg%j0.%yi")]:
+      for filename in [t.strftime("jplg%j0.%yi"), t.strftime("c1pg%j0.%yi"), t.strftime("c2pg%j0.%yi")]:
         try:
           filepath = download_file(url_base, folder_path, cache_subdir, filename, compression='.Z')
           return filepath
         except IOError as e:
           last_err = e
       raise last_err
+  else:
+      log.warn('Requested IONEX map ' + ionex + ' not implemented, defaulting to UQRG.')
+      return download_ionex(time, cache_dir, ionex='UQRG')
 
 
 def download_dcb(time, cache_dir):
