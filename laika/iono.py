@@ -77,7 +77,7 @@ class IonexMap:
       if "LAT" in line:
         lat, lon1, lon2, dlon, h = map(float, [line[x:x + 6] for x in xrange(2, 32, 6)])
         self.lats = np.append(self.lats, lat)
-        row_length = (lon2 - lon1) / dlon + 1  # total number of values of longitudes
+        row_length = (lon2 - lon1) // dlon + 1  # total number of values of longitudes
         next_lines_with_numbers = int(np.ceil(row_length / 16))
         elems_in_row = [
           min(16, int(row_length - i * 16)) for i in range(next_lines_with_numbers)
@@ -101,7 +101,7 @@ class IonexMap:
       if "LAT" in line:
         lat, lon1, lon2, dlon, h = map(float, [line[x:x + 6] for x in xrange(2, 32, 6)])
         self.lats = np.append(self.lats, lat)
-        row_length = (lon2 - lon1) / dlon + 1  # total number of values of longitudes
+        row_length = (lon2 - lon1) // dlon + 1  # total number of values of longitudes
         next_lines_with_numbers = int(np.ceil(row_length / 16))
         elems_in_row = [
           min(16, int(row_length - i * 16)) for i in range(next_lines_with_numbers)
