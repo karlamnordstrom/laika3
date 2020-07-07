@@ -93,8 +93,7 @@ class IonexMap:
           self.grid_TEC1 = np.vstack((self.grid_TEC1, row))
         else:
           self.grid_TEC1 = np.append(self.grid_TEC1, row)
-    print(lon1, lon2, row_length)
-    self.lons = np.linspace(lon1, lon2, row_length)
+    self.lons = np.linspace(lon1, lon2, int(row_length))
 
 
     self.lats = np.array([])
